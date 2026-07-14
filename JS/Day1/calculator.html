@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator</title>
+</head>
+<body>
+    <h1>Calculator</h1>
+
+    <p>
+        버튼을 누르면 계산식을 입력할 수 있습니다.
+    </p>
+
+    <button onclick="start()">
+        계산 시작
+    </button>
+</div>
+
+    <script>
+        function add(a, b) {return a + b;}
+        function subtract(a, b) {return a - b;}
+        function multiply(a, b) {return a * b;}
+        function divide(a, b) {return a / b;}
+
+        function inputFormula() {
+            return prompt("계산식을 입력하세요. 예: 1 + 2 * 3");
+        }
+
+        function calculate(formula) {
+            const tokens = formula.trim().split(/\s+/);
+
+            if (tokens.length < 3 || tokens.length % 2 === 0) {
+                return "잘못된 계산식이 입력되었습니다.";
+            }
+
+            const intermediateTokens = [];
+            let i = 0;
+
+            while (i < tokens.length) {
+                const token = tokens[i];
+
+                if (token === "*" || token === "/") {
+                    const left = Number(intermediateTokens.pop());
+                    const right = Number(tokens[i + 1]);
+
+                    if (isNaN(left) || isNaN(right)) {
+                        return "잘못된 숫자가 입력되었습니다.";
+                    }
+
+                    if (token === "/" && right === 0) {
+                        return "0으로 나눌 수 없습니다.";
+                    }
+
+                    const value =
+                        token === "*"
+                            ? multiply(left, right)
+                            : divide(left, right);
+
+                    intermediateTokens.push(value);
+                    i += 2;
+                } else {
+                    intermediateTokens.push(token);
+                    i++;
+                }
+            }
+
+            let result = Number(intermediateTokens[0]);
+
+            for (let j = 1; j < intermediateTokens.length; j += 2) {
+                const operator = intermediateTokens[j];
+                const nextValue = Number(intermediateTokens[j + 1]);
+
+                if (operator === "+") {
+                    result = add(result, nextValue);
+                } else if (operator === "-") {
+                    result = subtract(result, nextValue);
+                }
+            }
+
+            return result;
+        }
+
+        function start() {
+            const formula = inputFormula();
+
+            if (!formula) {
+                alert("계산식을 입력해주세요.");
+                return;
+            }
+
+            const result = calculate(formula);
+
+            alert(`결과: ${result}`);
+        }
+
+        
+    </script>
+</body>
+</html>
